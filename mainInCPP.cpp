@@ -20,6 +20,13 @@ std::vector<float> coords3D(float theta, float phi, float R, float r){
     return {x, y, z};
 }
 
+/*
+    in every use of coords[i], i = 0,1,2
+    coords[0] = x coord
+    coords[1] = y coord
+    coords[2] = z coord
+*/ 
+
 std::vector<float> rotateX(std::vector<float>& coords, float A){
     // MUST USE THE RESULTS FROM coords3d() FUNCTION !!!!!
 
@@ -40,6 +47,19 @@ std::vector<float> rotateZ(std::vector<float>& coords, float B){
     return {x_transformed, y_transformed, z_transformed};
 }
 
+std::vector<float> projection(std::vector<float>& coords){
+    // MUST USE THE RESULTS FROM rotateZ() FUNCTION !!!!!
+
+    int K = 5;  // constant that shifts everything forward to prevent division by zero
+    // K can take any value, large K -> smaller and flatter, small k-> bigger and distorted
+
+    // since we are projecting 3d onto 2d, only X and Y coords are required
+    float X = coords[0] / (coords[2] + K);
+    float Y = coords[1] / (coords[2] + K);
+
+    return {X, Y};
+}
+
 int main(){
 
     float R = 2, r = 1;
@@ -49,11 +69,14 @@ int main(){
         for(float j = 0; j < 2*pi; j += 0.02){
             std::vector<float> coords = coords3D(i,j,R,r);
             std::vector<float> coords_rotatedX = rotateX(coords, A);
-            std::vector<float> coords_rotatedZ = rotateZ(coords_rotatedX, B);   // final coords
+            std::vector<float> coords_rotatedZ = rotateZ(coords_rotatedX, B);   // final 3D coords
+
+            std::vector<float> coords_projected = projection(coords_rotatedZ);  // projecting 3d coordinates onto 2d screen
         
             // printing coords just for sanity
             // std::cout << "(" << coords[0] << ", " << coords[1] << ", " << coords[2] << ")" << '\n';
-            std::cout << "[" << coords_rotatedZ[0] << ", " << coords_rotatedZ[1] << ", " << coords_rotatedZ[2] << "]" << '\n';
+            //std::cout << "[" << coords_rotatedZ[0] << ", " << coords_rotatedZ[1] << ", " << coords_rotatedZ[2] << "]" << '\n';
+            //std::cout << "[" << coords_projected[0] << ", " << coords[1] << "]" << '\n';
         }
         A += 0.04;
         B += 0.02;
