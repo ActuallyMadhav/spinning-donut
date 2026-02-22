@@ -80,6 +80,10 @@ std::vector<float> scaleAndShift(std::vector<float>& coords){
     return {X_final, Y_final};
 }
 
+char shader(std::vector<float>& coords){
+    
+}
+
 int main(){
 
     float R = 2, r = 1;
@@ -99,7 +103,7 @@ int main(){
             // std::cout << "(" << coords[0] << ", " << coords[1] << ", " << coords[2] << ")" << '\n';
             //std::cout << "[" << coords_rotatedZ[0] << ", " << coords_rotatedZ[1] << ", " << coords_rotatedZ[2] << "]" << '\n';
             //std::cout << "[" << coords_projected[0] << ", " << coords_projected[1] << "]" << '\n';
-            //std::cout << "[" << coordsScaled[0] << ", " << coordsScaled[1] << "]" << '\n';
+            std::cout << "[" << coordsScaled[0] << ", " << coordsScaled[1] << "]" << '\n';
         }
         A += 0.04;
         B += 0.02;
