@@ -80,8 +80,57 @@ std::vector<float> scaleAndShift(std::vector<float>& coords){
     return {X_final, Y_final};
 }
 
-char shader(std::vector<float>& coords){
+void normalize(std::vector<float>& v){
+    float magnitude = sqrt(v[0]*v[0] + v[1]*v[1] + v[2]*v[2]);
+
+    if(!magnitude) return;
+
+    v[0] /= magnitude;
+    v[1] /= magnitude;
+    v[2] /= magnitude;
+}
+
+char shader(std::vector<float>& coords, float theta, float phi){
+    std::vector<float> surfaceNormal = {
+        cos(theta)*cos(phi),
+        cos(theta)*sin(phi),
+        sin(theta)
+    };
+
+    std::vector<float> lightVector = {0, 1, -1};
+
+    // need to normalize vectors so length is <= 1
+    normalize(surfaceNormal);
+    normalize(lightVector);
+
+    // brightness = dot product of surface normal and light vector
     
+    /*
+    dot product:
+    large positive: bright (facing light)
+    near zero: medium (surface sideways)
+    negative: dark (facing away)
+    */
+    
+    float brightness = surfaceNormal[0]*lightVector[0] + surfaceNormal[1]*lightVector[1] + surfaceNormal[2]*lightVector[2];
+
+    /*
+    need to make brightness return value between 0 and 1
+    if brightness < 0 set to 0
+    if brightness > 1 set to 1
+    */
+
+    if(brightness > 1) brightness = 1;
+    if(brightness < 0) brightness = 0;
+
+    std::string gradient = ".,-~:;=!*#$@";
+    int n = gradient.size();
+
+    // converting brightness into an index
+    int index = brightness*(n-1);
+    char pixel = gradient[index];
+
+    return pixel;
 }
 
 int main(){
@@ -98,12 +147,15 @@ int main(){
             std::vector<float> coords_projected = projection(coords_rotatedZ);  // projecting 3d coordinates onto 2d screen
 
             std::vector<float> coordsScaled = scaleAndShift(coords_projected);  // scaling and shifting coords to align with screen
+
+            char pixel = shader(coords_rotatedZ, i, j);
         
             // printing coords just for sanity
             // std::cout << "(" << coords[0] << ", " << coords[1] << ", " << coords[2] << ")" << '\n';
             //std::cout << "[" << coords_rotatedZ[0] << ", " << coords_rotatedZ[1] << ", " << coords_rotatedZ[2] << "]" << '\n';
             //std::cout << "[" << coords_projected[0] << ", " << coords_projected[1] << "]" << '\n';
-            std::cout << "[" << coordsScaled[0] << ", " << coordsScaled[1] << "]" << '\n';
+            //std::cout << "[" << coordsScaled[0] << ", " << coordsScaled[1] << "]" << '\n';
+            //std::cout << pixel << ' ';
         }
         A += 0.04;
         B += 0.02;
