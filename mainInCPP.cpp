@@ -133,33 +133,48 @@ char shader(std::vector<float>& coords, float theta, float phi){
     return pixel;
 }
 
+
+
 int main(){
 
+    int rows = 22, cols = 80;
+    char init = ' ';
     float R = 2, r = 1;
-    float A = 0, B = 0;
+    float A = 0, B = 0;    
 
-    for(float i = 0; i < 2*pi; i += 0.07){
-        for(float j = 0; j < 2*pi; j += 0.02){
-            std::vector<float> coords = coords3D(i,j,R,r);
-            std::vector<float> coords_rotatedX = rotateX(coords, A);
-            std::vector<float> coords_rotatedZ = rotateZ(coords_rotatedX, B);   // final 3D coords
+    for(;;){
+        std::vector<std::vector<char>> screen(rows, std::vector<char>(cols, init));
 
-            std::vector<float> coords_projected = projection(coords_rotatedZ);  // projecting 3d coordinates onto 2d screen
+        for(float theta = 0; theta < 2*pi; theta+= 0.07){
+            for(float phi = 0; phi < 2*pi; phi += 0.02){
+                std::vector<float> coords = coords3D(theta, phi, R, r);
+                std::vector<float> coords_rotatedX = rotateX(coords, A);
+                std::vector<float> coords_rotatedZ = rotateZ(coords_rotatedX, B);
+                std::vector<float> coords_projected = projection(coords_rotatedZ);
+                std::vector<float> coords_scaled = scaleAndShift(coords_projected);
 
-            std::vector<float> coordsScaled = scaleAndShift(coords_projected);  // scaling and shifting coords to align with screen
+                int x = (int)coords_scaled[0];
+                int y = (int)coords_scaled[1];
+                if(x < 0 || x > cols-1 || y < 0 || y > rows-1) continue;
 
-            char pixel = shader(coords_rotatedZ, i, j);
-        
-            // printing coords just for sanity
-            // std::cout << "(" << coords[0] << ", " << coords[1] << ", " << coords[2] << ")" << '\n';
-            //std::cout << "[" << coords_rotatedZ[0] << ", " << coords_rotatedZ[1] << ", " << coords_rotatedZ[2] << "]" << '\n';
-            //std::cout << "[" << coords_projected[0] << ", " << coords_projected[1] << "]" << '\n';
-            //std::cout << "[" << coordsScaled[0] << ", " << coordsScaled[1] << "]" << '\n';
-            //std::cout << pixel << ' ';
+                char pixel = shader(coords_rotatedZ, theta, phi);
+                screen[y][x] = pixel;
+                //std::cout << screen[y][x] << ' ';
+
+            }
         }
+        
+        for(int i = 0; i < rows; i++){
+            for(int j = 0; j < cols; j++){
+                std::cout << screen[i][j];
+            }
+            std::cout << '\n';
+        }
+        std::cout << "\x1b[H";
+        usleep(50000);
         A += 0.04;
         B += 0.02;
     }
-
+    
     return 0;
 }
