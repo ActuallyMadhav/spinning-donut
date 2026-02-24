@@ -16,7 +16,7 @@ std::array<float,3> coords3d(float theta, float phi, float R, float r){
     return {x, y, z};
 }
 
-std::array<float,3> rotateX(std::array<float,3>& coords, float A){
+std::array<float,3> rotateX(const std::array<float,3>& coords, float A){
     float y_transformed = coords[1]*cos(A) - coords[2]*sin(A);
     float z_transformed = coords[1]*sin(A) + coords[2]*cos(A);
     float x_transformed = coords[0]; // x remains unchanged
@@ -24,7 +24,7 @@ std::array<float,3> rotateX(std::array<float,3>& coords, float A){
     return {x_transformed, y_transformed, z_transformed};
 }
 
-std::array<float,3> rotateZ(std::array<float,3>& coords, float B){
+std::array<float,3> rotateZ(const std::array<float,3>& coords, float B){
     float x_transformed = coords[0]*cos(B) - coords[1]*sin(B);
     float y_transformed = coords[0]*sin(B) + coords[1]*cos(B);
     float z_transformed = coords[2]; // z remains unchanged
@@ -32,7 +32,7 @@ std::array<float,3> rotateZ(std::array<float,3>& coords, float B){
     return {x_transformed, y_transformed, z_transformed};
 }
 
-std::array<float,2> projection(std::array<float,3>& coords){
+std::array<float,2> projection(const std::array<float,3>& coords){
     int K = 5;
 
     float X = coords[0] / (coords[2] + K);
@@ -41,7 +41,7 @@ std::array<float,2> projection(std::array<float,3>& coords){
     return {X, Y};
 }
 
-std::array<float,2> scaleAndShift(std::array<float,2>& coords){
+std::array<float,2> scaleAndShift(const std::array<float,2>& coords){
     float X_scaled = coords[0] * 30;
     float Y_scaled = coords[1] * 15;
 
