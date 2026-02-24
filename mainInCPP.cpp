@@ -159,6 +159,7 @@ int main(){
 
                 char pixel = shader(coords_rotatedZ, theta, phi);
                 screen[y][x] = pixel;
+                //screen[y][x] = '.';
                 //std::cout << screen[y][x] << ' ';
 
             }
