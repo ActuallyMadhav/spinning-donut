@@ -3,7 +3,7 @@
 #include <cmath>
 #include <unistd.h>
 
-#define pi 3.141592654
+#define pi M_PI
 
 // brightness scale (lowest to highest): .,-~:;=!*#$@
 
