@@ -5,7 +5,7 @@
 
 // brightness scale (lowest to highest): .,-~:;=!*#$@
 
-vec3 coords3D(float theta, float phi, float R, float r){
+vec3 generateCoords3D(float theta, float phi, float R, float r){
     vec3 coords;
 
     coords.x = (R + r*cos(theta)) * cos(phi);
@@ -17,9 +17,9 @@ vec3 coords3D(float theta, float phi, float R, float r){
 
 int main(){
 
-    vec3 coords = coords3D(0.0, 0.0, 2.0, 1.0);
+    vec3 coords = generateCoords3D(0.0, 0.0, 2.0, 1.0);
 
-    printf("%f%f%f", coords.x, coords.y, coords.z);
+    printf("%.2f %.2f %.2f", coords.x, coords.y, coords.z);
 
     return 0;
 }
