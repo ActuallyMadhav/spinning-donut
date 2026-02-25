@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <cmath>
 #include <unistd.h>
+#include <glm/glm.hpp>
 
 #define pi 3.141592654
 
@@ -65,6 +66,9 @@ char shader(float theta, float phi);
 
 int main(){
     
+    glm::vec2 a(1.0f, 2.0f);
+
+    std::cout << a.x << a.y;
 
     return 0;
 }
