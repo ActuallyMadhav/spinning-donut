@@ -1,7 +1,8 @@
 #include <stdio.h>
 #include <math.h>
 #include <unistd.h>
-#include "vec.h"
+
+typedef struct{float x,y,z} vec3;
 
 // brightness scale (lowest to highest): .,-~:;=!*#$@
 
