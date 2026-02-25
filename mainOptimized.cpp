@@ -5,7 +5,7 @@
 #include <unistd.h>
 #include <glm/glm.hpp>
 
-#define pi 3.141592654
+#define pi M_PI
 
 // brightness scale (lowest to highest): .,-~:;=!*#$@
 
