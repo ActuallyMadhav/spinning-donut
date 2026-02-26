@@ -2,7 +2,8 @@
 #include <math.h>
 #include <unistd.h>
 
-typedef struct{float x,y,z} vec3;
+typedef struct{float x,y;} vec2;
+typedef struct{float x,y,z;} vec3;
 
 // brightness scale (lowest to highest): .,-~:;=!*#$@
 
@@ -14,6 +15,14 @@ vec3 generateCoords3D(float theta, float phi, float R, float r){
     coords.z = r*sin(theta);
 
     return coords;
+}
+
+vec3 rotateX(vec3 coords, float A){
+    vec3 transformed;
+    transformed.y = coords.y*cos(A) - coords.z*sin(A);
+    transformed.z = coords.y*sin(A) + coords.z*cos(A);
+    transformed.x = coords.x;
+    return transformed;
 }
 
 int main(){
