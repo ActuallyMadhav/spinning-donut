@@ -1,7 +1,11 @@
 #include <iostream>
+#include <bits/stdc++.h>
 #include <cmath>
 #include <unistd.h>
 #include <glm/glm.hpp>
+
+#define GLM_ENABLE_EXPERIMENTAL
+
 #include <glm/gtx/transform.hpp>
 
 #define pi M_PI
@@ -105,7 +109,49 @@ char shader(float theta, float phi){
 
 int main(){
     
+    int rows = 22, cols = 80;
+    char init = ' ';
+    float R = 2, r = 1;
+    float A = 0, B = 0;
 
+    std::vector<std::vector<char>> screen(rows, std::vector<char>(cols, init));
+
+    for(;;){
+        // reset buffer
+        for(int i = 0; i < rows; i++){
+            std::fill(screen[i].begin(), screen[i].end(), init);
+        }
+
+        // donut coords
+        for(float theta = 0; theta < 2*pi; theta += 0.09){  // had to use slightly larger step size to account for extra calcs per frame
+            for(float phi = 0; phi < 2*pi; phi += 0.04){
+                glm::vec3 coords = coords3d(theta, phi, R, r);
+                glm::vec3 coords_rotatedX = rotateX(coords, A);
+                glm::vec3 coords_rotatedZ = rotateZ(coords_rotatedX, B);
+                glm::vec2 coords_projected = projection(coords_rotatedZ);
+                glm::vec2 coords_scaled = scaleAndShift(coords_projected);
+
+                int x = (int)coords_scaled[0];
+                int y = (int)coords_scaled[1];
+                if(x < 0 || x > cols-1 || y < 0 || y > rows-1) continue;
+
+                char pixel = shader(theta, phi);
+                screen[y][x] = pixel;
+            }
+        }
+
+        std::cout << "\x1b[H";  // clear screen
+        for(int i = 0; i < rows; i++){
+            for(int j = 0; j < cols; j++){
+                std::cout << screen[i][j];
+            }
+            std::cout << '\n';
+        }
+
+        usleep(50000);
+        A += 0.04;
+        B += 0.02;
+    }
 
     return 0;
 }
