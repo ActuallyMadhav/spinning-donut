@@ -13,25 +13,36 @@
 // brightness scale (lowest to highest): .,-~:;=!*#$@
 
 glm::vec3 coords3d(float theta, float phi, float R, float r){
-    float x = (R + r*cos(theta)) * cos(phi);
-    float y = (R + r*cos(theta)) * sin(phi);
-    float z = r*sin(theta);
+    float ct = cos(theta);
+    float st = sin(theta);
+    float cp = cos(phi);
+    float sp = sin(phi);
+
+    float x = (R + r*ct) * cp;
+    float y = (R + r*ct) * sp;
+    float z = r*st;
 
     return {x, y, z};
 }
 
 // GLM provides transformation and rotation functions - glm::rotate(angle, vec)
 glm::vec3 my_rotateX(const glm::vec3& coords, float A){
-    float y_transformed = coords[1]*cos(A) - coords[2]*sin(A);
-    float z_transformed = coords[1]*sin(A) + coords[2]*cos(A);
+    float ca = cos(A);
+    float sa = sin(A);
+
+    float y_transformed = coords[1]*ca - coords[2]*sa;
+    float z_transformed = coords[1]*sa + coords[2]*ca;
     float x_transformed = coords[0]; // x remains unchanged
 
     return {x_transformed, y_transformed, z_transformed};
 }
 
 glm::vec3 my_rotateZ(const glm::vec3& coords, float B){
-    float x_transformed = coords[0]*cos(B) - coords[1]*sin(B);
-    float y_transformed = coords[0]*sin(B) + coords[1]*cos(B);
+    float cb = cos(B);
+    float sb = sin(B);
+
+    float x_transformed = coords[0]*cb - coords[1]*sb;
+    float y_transformed = coords[0]*sb + coords[1]*cb;
     float z_transformed = coords[2]; // z remains unchanged
 
     return {x_transformed, y_transformed, z_transformed};
@@ -81,10 +92,13 @@ void normalize(glm::vec3& v){
 }
 
 char shader(float theta, float phi){
+    float ct = cos(theta), cp = cos(phi);
+    float st = sin(theta), sp = sin(phi);
+    
     glm::vec3 surfaceNormal = {
-        cos(theta) * cos(phi),
-        cos(theta) * sin(phi),
-        sin(theta)
+        ct * cp,
+        ct * sp,
+        st
     };
 
     glm::vec3 lightVector = {0.0f, 1.0f, -1.0f};
